@@ -1,4 +1,4 @@
-# OAuthLab — OAuth2 / OIDC Playground & Debugger
+# CustomLogin — OAuth2 / OIDC Playground & Debugger
 
 An enterprise-grade developer tool for testing, inspecting, and understanding OAuth2 / OIDC flows.
 
@@ -10,16 +10,16 @@ An enterprise-grade developer tool for testing, inspecting, and understanding OA
 ## Project Structure
 
 ```
-OAuthLab/
+CustomLogin/
   src/
-    OAuthLab.Api/              — HTTP endpoints, middleware, Swagger/OpenAPI
-    OAuthLab.Application/      — Commands, queries, interfaces, configuration
-    OAuthLab.Domain/           — Aggregates, entities, value objects, domain events
-    OAuthLab.Infrastructure/   — MongoDB persistence, HTTP clients, external services
-    OAuthLab.Contracts/        — Public API request/response DTOs
+    CustomLogin.Api/              — HTTP endpoints, middleware, Swagger/OpenAPI
+    CustomLogin.Application/      — Commands, queries, interfaces, configuration
+    CustomLogin.Domain/           — Aggregates, entities, value objects, domain events
+    CustomLogin.Infrastructure/   — MongoDB persistence, HTTP clients, external services
+    CustomLogin.Contracts/        — Public API request/response DTOs
   tests/
-    OAuthLab.UnitTests/        — Unit tests
-    OAuthLab.IntegrationTests/ — Integration tests
+    CustomLogin.UnitTests/        — Unit tests
+    CustomLogin.IntegrationTests/ — Integration tests
 ```
 
 ## Running the Project
@@ -32,7 +32,7 @@ OAuthLab/
 
 2. From the solution root, run:
    ```bash
-   dotnet run --project src/OAuthLab.Api
+   dotnet run --project src/CustomLogin.Api
    ```
 
 3. The API will be available at:
@@ -43,7 +43,7 @@ OAuthLab/
 
 ## Configuration
 
-Edit `src/OAuthLab.Api/appsettings.json` to configure MongoDB connection:
+Edit `src/CustomLogin.Api/appsettings.json` to configure MongoDB connection:
 
 ```json
 {
@@ -57,13 +57,13 @@ Edit `src/OAuthLab.Api/appsettings.json` to configure MongoDB connection:
 ## Building
 
 ```bash
-dotnet build OAuthLab.slnx
+dotnet build CustomLogin.slnx
 ```
 
 ## Testing
 
 ```bash
-dotnet test OAuthLab.slnx
+dotnet test CustomLogin.slnx
 ```
 
 ## Architecture

@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CustomLogin.Api/CustomLogin.Api.csproj" />
+    <Project Path="src/CustomLogin.Application/CustomLogin.Application.csproj" />
+    <Project Path="src/CustomLogin.Contracts/CustomLogin.Contracts.csproj" />
+    <Project Path="src/CustomLogin.Domain/CustomLogin.Domain.csproj" />
+    <Project Path="src/CustomLogin.Infrastructure/CustomLogin.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CustomLogin.IntegrationTests/CustomLogin.IntegrationTests.csproj" />
+    <Project Path="tests/CustomLogin.UnitTests/CustomLogin.UnitTests.csproj" />
+  </Folder>
+</Solution>
