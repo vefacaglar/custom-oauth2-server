@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using OAuthLab.Application.Configuration;
+using OAuthLab.Application.ProviderManagement;
 using OAuthLab.Infrastructure.Persistence;
+using OAuthLab.Infrastructure.Persistence.Repositories;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +22,8 @@ public static class DependencyInjection
             var client = sp.GetRequiredService<IMongoClient>();
             return new MongoDbContext(client, settings.DatabaseName);
         });
+
+        services.AddScoped<IProviderConfigRepository, ProviderConfigRepository>();
 
         return services;
     }
