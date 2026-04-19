@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using CustomLogin.Application.Configuration;
 using CustomLogin.Application.OAuthFlows;
 using CustomLogin.Application.ProviderManagement;
+using CustomLogin.Application.TokenInspection;
 using CustomLogin.Infrastructure.OAuthFlows;
 using CustomLogin.Infrastructure.Persistence;
 using CustomLogin.Infrastructure.Persistence.EventSourcing;
@@ -30,6 +31,10 @@ public static class DependencyInjection
         services.AddScoped<IFlowSessionRepository, FlowSessionRepository>();
         services.AddScoped<IEventStore, MongoEventStore>();
         services.AddScoped<IPkceService, PkceService>();
+        services.AddScoped<ITokenResponseRepository, TokenResponseRepository>();
+
+        services.AddHttpClient("TokenEndpoint");
+        services.AddScoped<ITokenEndpointClient, TokenEndpointClient>();
 
         return services;
     }
