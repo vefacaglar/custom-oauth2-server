@@ -96,8 +96,31 @@ public sealed class DecodedJwt
                 formatError: $"Failed to decode Base64URL: {ex.Message}");
         }
 
-        var header = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, System.Text.Json.JsonElement>>(headerJson);
-        var payload = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, System.Text.Json.JsonElement>>(payloadJson);
+        Dictionary<string, System.Text.Json.JsonElement>? header = null;
+        Dictionary<string, System.Text.Json.JsonElement>? payload = null;
+        try
+        {
+            header = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, System.Text.Json.JsonElement>>(headerJson);
+            payload = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, System.Text.Json.JsonElement>>(payloadJson);
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            return new DecodedJwt(
+                algorithm: string.Empty,
+                keyId: null,
+                issuer: null,
+                audience: null,
+                subject: null,
+                expiration: null,
+                issuedAt: null,
+                notBefore: null,
+                scopes: [],
+                claims: new Dictionary<string, object>(),
+                rawHeader: headerJson,
+                rawPayload: payloadJson,
+                isValidFormat: false,
+                formatError: $"Failed to parse JWT header or payload as JSON: {ex.Message}");
+        }
 
         if (header is null || payload is null)
         {
