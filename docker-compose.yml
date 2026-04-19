@@ -1,0 +1,14 @@
+services:
+  mongodb:
+    image: mongo:8
+    container_name: oauthlab-mongo
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    volumes:
+      - oauthlab-mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: oauthlab
+
+volumes:
+  oauthlab-mongo-data:

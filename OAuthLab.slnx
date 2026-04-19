@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OAuthLab.Api/OAuthLab.Api.csproj" />
+    <Project Path="src/OAuthLab.Application/OAuthLab.Application.csproj" />
+    <Project Path="src/OAuthLab.Contracts/OAuthLab.Contracts.csproj" />
+    <Project Path="src/OAuthLab.Domain/OAuthLab.Domain.csproj" />
+    <Project Path="src/OAuthLab.Infrastructure/OAuthLab.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OAuthLab.IntegrationTests/OAuthLab.IntegrationTests.csproj" />
+    <Project Path="tests/OAuthLab.UnitTests/OAuthLab.UnitTests.csproj" />
+  </Folder>
+</Solution>
