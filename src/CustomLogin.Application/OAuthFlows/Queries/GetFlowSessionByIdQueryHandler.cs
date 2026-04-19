@@ -1,3 +1,5 @@
+using CustomLogin.Application.Dispatcher;
+
 using CustomLogin.Application.OAuthFlows;
 using CustomLogin.Contracts.OAuthFlows;
 using CustomLogin.Domain;
@@ -5,7 +7,7 @@ using CustomLogin.Domain.OAuthFlows;
 
 namespace CustomLogin.Application.OAuthFlows.Queries;
 
-public sealed class GetFlowSessionByIdQueryHandler
+public sealed class GetFlowSessionByIdQueryHandler : IQueryHandler<GetFlowSessionByIdQuery, FlowSessionResponse>
 {
     private readonly IFlowSessionRepository _sessionRepository;
 

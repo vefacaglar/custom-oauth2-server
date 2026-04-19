@@ -1,8 +1,9 @@
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+using CustomLogin.Application.Dispatcher;
 using CustomLogin.Application.ProviderManagement.Commands;
 using CustomLogin.Application.ProviderManagement.Queries;
 using CustomLogin.Contracts.ProviderManagement;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CustomLogin.Api.Controllers;
 
@@ -10,18 +11,23 @@ namespace CustomLogin.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class ProviderConfigsController : ControllerBase
 {
-    private readonly ILogger<ProviderConfigsController> _logger;
+    private readonly IDispatcher _dispatcher;
+    private readonly IValidator<CreateProviderConfigCommand> _createValidator;
+    private readonly IValidator<UpdateProviderConfigCommand> _updateValidator;
 
-    public ProviderConfigsController(ILogger<ProviderConfigsController> logger)
+    public ProviderConfigsController(
+        IDispatcher dispatcher,
+        IValidator<CreateProviderConfigCommand> createValidator,
+        IValidator<UpdateProviderConfigCommand> updateValidator)
     {
-        _logger = logger;
+        _dispatcher = dispatcher;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateProviderConfigRequest request,
-        [FromServices] IValidator<CreateProviderConfigCommand> validator,
-        [FromServices] CreateProviderConfigCommandHandler handler,
         CancellationToken ct)
     {
         var command = new CreateProviderConfigCommand
@@ -40,14 +46,11 @@ public sealed class ProviderConfigsController : ControllerBase
             SupportedGrantTypes = request.SupportedGrantTypes
         };
 
-        var validationResult = await validator.ValidateAsync(command, ct);
+        var validationResult = await _createValidator.ValidateAsync(command, ct);
         if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-            return BadRequest(new { errors });
-        }
+            return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList() });
 
-        var result = await handler.Handle(command, ct);
+        var result = await _dispatcher.Send(command, ct);
 
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Error });
@@ -56,13 +59,10 @@ public sealed class ProviderConfigsController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(
-        Guid id,
-        [FromServices] GetProviderConfigByIdQueryHandler handler,
-        CancellationToken ct)
+    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
         var query = new GetProviderConfigByIdQuery { Id = id };
-        var result = await handler.Handle(query, ct);
+        var result = await _dispatcher.Query(query, ct);
 
         if (!result.IsSuccess)
             return NotFound(new { error = result.Error });
@@ -71,13 +71,10 @@ public sealed class ProviderConfigsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> List(
-        [FromServices] ListProviderConfigsQueryHandler handler,
-        CancellationToken ct)
+    public async Task<IActionResult> List(CancellationToken ct)
     {
         var query = new ListProviderConfigsQuery();
-        var result = await handler.Handle(query, ct);
-
+        var result = await _dispatcher.Query(query, ct);
         return Ok(result.Value);
     }
 
@@ -85,8 +82,6 @@ public sealed class ProviderConfigsController : ControllerBase
     public async Task<IActionResult> Update(
         Guid id,
         [FromBody] UpdateProviderConfigRequest request,
-        [FromServices] IValidator<UpdateProviderConfigCommand> validator,
-        [FromServices] UpdateProviderConfigCommandHandler handler,
         CancellationToken ct)
     {
         var command = new UpdateProviderConfigCommand
@@ -106,14 +101,11 @@ public sealed class ProviderConfigsController : ControllerBase
             SupportedGrantTypes = request.SupportedGrantTypes
         };
 
-        var validationResult = await validator.ValidateAsync(command, ct);
+        var validationResult = await _updateValidator.ValidateAsync(command, ct);
         if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-            return BadRequest(new { errors });
-        }
+            return BadRequest(new { errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList() });
 
-        var result = await handler.Handle(command, ct);
+        var result = await _dispatcher.Send(command, ct);
 
         if (!result.IsSuccess)
             return result.Error == "Provider config not found."
@@ -124,13 +116,10 @@ public sealed class ProviderConfigsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(
-        Guid id,
-        [FromServices] DeleteProviderConfigCommandHandler handler,
-        CancellationToken ct)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
     {
         var command = new DeleteProviderConfigCommand { Id = id };
-        var result = await handler.Handle(command, ct);
+        var result = await _dispatcher.Send(command, ct);
 
         if (!result.IsSuccess)
             return NotFound(new { error = result.Error });

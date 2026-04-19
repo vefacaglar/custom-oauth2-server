@@ -1,10 +1,11 @@
+using CustomLogin.Application.Dispatcher;
 using CustomLogin.Application.ProviderManagement;
 using CustomLogin.Domain;
 using CustomLogin.Domain.ProviderManagement;
 
 namespace CustomLogin.Application.ProviderManagement.Commands;
 
-public sealed class CreateProviderConfigCommandHandler
+public sealed class CreateProviderConfigCommandHandler : ICommandHandler<CreateProviderConfigCommand, Guid>
 {
     private readonly IProviderConfigRepository _repository;
 

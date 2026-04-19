@@ -1,6 +1,8 @@
+using CustomLogin.Application.Dispatcher;
+
 namespace CustomLogin.Application.ProviderManagement.Commands;
 
-public sealed class CreateProviderConfigCommand
+public sealed class CreateProviderConfigCommand : ICommand<Guid>
 {
     public string Name { get; set; } = string.Empty;
     public string AuthorizationEndpoint { get; set; } = string.Empty;

@@ -1,6 +1,8 @@
+using CustomLogin.Application.Dispatcher;
+
 namespace CustomLogin.Application.ProviderManagement.Commands;
 
-public sealed class UpdateProviderConfigCommand
+public sealed class UpdateProviderConfigCommand : ICommand
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

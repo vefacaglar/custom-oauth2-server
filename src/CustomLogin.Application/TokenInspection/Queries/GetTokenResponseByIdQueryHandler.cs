@@ -1,10 +1,12 @@
+using CustomLogin.Application.Dispatcher;
+
 using CustomLogin.Contracts.TokenInspection;
 using CustomLogin.Domain;
 using CustomLogin.Domain.TokenInspection;
 
 namespace CustomLogin.Application.TokenInspection.Queries;
 
-public sealed class GetTokenResponseByIdQueryHandler
+public sealed class GetTokenResponseByIdQueryHandler : IQueryHandler<GetTokenResponseByIdQuery, TokenResponseSummary>
 {
     private readonly ITokenResponseRepository _repository;
 

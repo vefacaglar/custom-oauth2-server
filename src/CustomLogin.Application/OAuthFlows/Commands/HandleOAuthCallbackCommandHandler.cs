@@ -1,3 +1,5 @@
+using CustomLogin.Application.Dispatcher;
+
 using CustomLogin.Application.OAuthFlows;
 using CustomLogin.Contracts.OAuthFlows;
 using CustomLogin.Domain;
@@ -5,7 +7,7 @@ using CustomLogin.Domain.OAuthFlows;
 
 namespace CustomLogin.Application.OAuthFlows.Commands;
 
-public sealed class HandleOAuthCallbackCommandHandler
+public sealed class HandleOAuthCallbackCommandHandler : ICommandHandler<HandleOAuthCallbackCommand, FlowSessionResponse>
 {
     private readonly IFlowSessionRepository _sessionRepository;
     private readonly IEventStore _eventStore;

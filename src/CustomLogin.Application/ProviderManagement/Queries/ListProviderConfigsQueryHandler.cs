@@ -1,10 +1,12 @@
+using CustomLogin.Application.Dispatcher;
+
 using CustomLogin.Contracts.ProviderManagement;
 using CustomLogin.Domain;
 using CustomLogin.Domain.ProviderManagement;
 
 namespace CustomLogin.Application.ProviderManagement.Queries;
 
-public sealed class ListProviderConfigsQueryHandler
+public sealed class ListProviderConfigsQueryHandler : IQueryHandler<ListProviderConfigsQuery, IReadOnlyList<ProviderConfigResponse>>
 {
     private readonly IProviderConfigRepository _repository;
 

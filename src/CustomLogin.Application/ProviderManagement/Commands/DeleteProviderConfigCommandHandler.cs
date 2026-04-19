@@ -1,9 +1,11 @@
+using CustomLogin.Application.Dispatcher;
+
 using CustomLogin.Domain;
 using CustomLogin.Domain.ProviderManagement;
 
 namespace CustomLogin.Application.ProviderManagement.Commands;
 
-public sealed class DeleteProviderConfigCommandHandler
+public sealed class DeleteProviderConfigCommandHandler : ICommandHandler<DeleteProviderConfigCommand>
 {
     private readonly IProviderConfigRepository _repository;
 

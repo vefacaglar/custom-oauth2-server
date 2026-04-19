@@ -1,3 +1,5 @@
+using CustomLogin.Application.Dispatcher;
+
 using System.Security.Cryptography;
 using CustomLogin.Application.OAuthFlows;
 using CustomLogin.Application.ProviderManagement;
@@ -8,7 +10,7 @@ using CustomLogin.Domain.ProviderManagement;
 
 namespace CustomLogin.Application.OAuthFlows.Commands;
 
-public sealed class StartAuthorizationCodePkceFlowCommandHandler
+public sealed class StartAuthorizationCodePkceFlowCommandHandler : ICommandHandler<StartAuthorizationCodePkceFlowCommand, StartAuthorizationCodePkceResponse>
 {
     private readonly IProviderConfigRepository _providerRepository;
     private readonly IFlowSessionRepository _sessionRepository;

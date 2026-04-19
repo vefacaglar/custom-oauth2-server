@@ -1,3 +1,5 @@
+using CustomLogin.Application.Dispatcher;
+
 using CustomLogin.Application.ProviderManagement;
 using CustomLogin.Application.TokenInspection;
 using CustomLogin.Contracts.TokenInspection;
@@ -7,7 +9,7 @@ using CustomLogin.Domain.TokenInspection;
 
 namespace CustomLogin.Application.TokenInspection.Commands;
 
-public sealed class ExecuteClientCredentialsCommandHandler
+public sealed class ExecuteClientCredentialsCommandHandler : ICommandHandler<ExecuteClientCredentialsCommand, TokenExchangeResponse>
 {
     private readonly IProviderConfigRepository _providerRepository;
     private readonly ITokenEndpointClient _tokenClient;

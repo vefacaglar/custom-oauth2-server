@@ -1,3 +1,5 @@
+using CustomLogin.Application.Dispatcher;
+
 using CustomLogin.Application.OAuthFlows;
 using CustomLogin.Application.ProviderManagement;
 using CustomLogin.Application.TokenInspection;
@@ -9,7 +11,7 @@ using CustomLogin.Domain.TokenInspection;
 
 namespace CustomLogin.Application.TokenInspection.Commands;
 
-public sealed class ExchangeAuthorizationCodeCommandHandler
+public sealed class ExchangeAuthorizationCodeCommandHandler : ICommandHandler<ExchangeAuthorizationCodeCommand, TokenExchangeResponse>
 {
     private readonly IFlowSessionRepository _sessionRepository;
     private readonly IProviderConfigRepository _providerRepository;

@@ -1,20 +1,21 @@
+using CustomLogin.Application.Dispatcher;
 using CustomLogin.Contracts.TokenInspection;
 using CustomLogin.Domain;
 using CustomLogin.Domain.TokenInspection;
 
 namespace CustomLogin.Application.TokenInspection.Commands;
 
-public sealed class DecodeJwtCommandHandler
+public sealed class DecodeJwtCommandHandler : ICommandHandler<DecodeJwtCommand, DecodedJwtResponse>
 {
-    public Result<DecodedJwtResponse> Handle(DecodeJwtCommand command)
+    public Task<Result<DecodedJwtResponse>> Handle(DecodeJwtCommand command, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(command.Token))
-            return Result<DecodedJwtResponse>.Failure("Token is required.");
+            return Task.FromResult(Result<DecodedJwtResponse>.Failure("Token is required."));
 
         var decoded = DecodedJwt.Decode(command.Token);
 
         if (!decoded.IsValidFormat)
-            return Result<DecodedJwtResponse>.Failure(decoded.FormatError ?? "Invalid JWT format.");
+            return Task.FromResult(Result<DecodedJwtResponse>.Failure(decoded.FormatError ?? "Invalid JWT format."));
 
         var response = new DecodedJwtResponse
         {
@@ -35,6 +36,6 @@ public sealed class DecodeJwtCommandHandler
             IsExpired = decoded.Expiration.HasValue && decoded.Expiration.Value < DateTime.UtcNow
         };
 
-        return Result<DecodedJwtResponse>.Success(response);
+        return Task.FromResult(Result<DecodedJwtResponse>.Success(response));
     }
 }

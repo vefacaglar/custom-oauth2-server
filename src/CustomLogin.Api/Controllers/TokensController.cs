@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
+using CustomLogin.Application.Dispatcher;
 using CustomLogin.Application.TokenInspection.Commands;
 using CustomLogin.Application.TokenInspection.Queries;
 using CustomLogin.Contracts.TokenInspection;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CustomLogin.Api.Controllers;
 
@@ -9,18 +10,20 @@ namespace CustomLogin.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class TokensController : ControllerBase
 {
+    private readonly IDispatcher _dispatcher;
+
+    public TokensController(IDispatcher dispatcher)
+    {
+        _dispatcher = dispatcher;
+    }
+
     [HttpPost("exchange-code")]
     public async Task<IActionResult> ExchangeCode(
         [FromBody] ExchangeAuthorizationCodeRequest request,
-        [FromServices] ExchangeAuthorizationCodeCommandHandler handler,
         CancellationToken ct)
     {
-        var command = new ExchangeAuthorizationCodeCommand
-        {
-            FlowSessionId = request.FlowSessionId
-        };
-
-        var result = await handler.Handle(command, ct);
+        var command = new ExchangeAuthorizationCodeCommand { FlowSessionId = request.FlowSessionId };
+        var result = await _dispatcher.Send(command, ct);
 
         if (!result.IsSuccess)
             return result.Error switch
@@ -33,12 +36,12 @@ public sealed class TokensController : ControllerBase
     }
 
     [HttpPost("decode")]
-    public IActionResult DecodeJwt(
+    public async Task<IActionResult> DecodeJwt(
         [FromBody] DecodeJwtRequest request,
-        [FromServices] DecodeJwtCommandHandler handler)
+        CancellationToken ct)
     {
         var command = new DecodeJwtCommand { Token = request.Token };
-        var result = handler.Handle(command);
+        var result = await _dispatcher.Send(command, ct);
 
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Error });
@@ -47,13 +50,10 @@ public sealed class TokensController : ControllerBase
     }
 
     [HttpGet("responses/{id:guid}")]
-    public async Task<IActionResult> GetTokenResponse(
-        Guid id,
-        [FromServices] GetTokenResponseByIdQueryHandler handler,
-        CancellationToken ct)
+    public async Task<IActionResult> GetTokenResponse(Guid id, CancellationToken ct)
     {
         var query = new GetTokenResponseByIdQuery { Id = id };
-        var result = await handler.Handle(query, ct);
+        var result = await _dispatcher.Query(query, ct);
 
         if (!result.IsSuccess)
             return NotFound(new { error = result.Error });
@@ -64,7 +64,6 @@ public sealed class TokensController : ControllerBase
     [HttpPost("client-credentials")]
     public async Task<IActionResult> ClientCredentials(
         [FromBody] ClientCredentialsRequest request,
-        [FromServices] ExecuteClientCredentialsCommandHandler handler,
         CancellationToken ct)
     {
         var command = new ExecuteClientCredentialsCommand
@@ -73,7 +72,7 @@ public sealed class TokensController : ControllerBase
             Scope = request.Scope
         };
 
-        var result = await handler.Handle(command, ct);
+        var result = await _dispatcher.Send(command, ct);
 
         if (!result.IsSuccess)
             return result.Error switch
@@ -89,7 +88,6 @@ public sealed class TokensController : ControllerBase
     public async Task<IActionResult> RefreshToken(
         Guid id,
         [FromBody] RefreshTokenRequest request,
-        [FromServices] RefreshAccessTokenCommandHandler handler,
         CancellationToken ct)
     {
         var command = new RefreshAccessTokenCommand
@@ -98,7 +96,7 @@ public sealed class TokensController : ControllerBase
             RefreshToken = request.RefreshToken
         };
 
-        var result = await handler.Handle(command, ct);
+        var result = await _dispatcher.Send(command, ct);
 
         if (!result.IsSuccess)
             return result.Error switch
